@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
@@ -19,6 +19,8 @@ const initialState = {
 const UploadImagesHook = ({ path }) => {
   const { emptyUploadImages } = useSelector((state) => state.function)
   const [state, setState] = useState(initialState)
+  const imageRef = useRef()
+
   const handleChange = (e) => {
     setState({ ...state, file: e.target.files[0] })
   }
@@ -49,7 +51,9 @@ const UploadImagesHook = ({ path }) => {
         ...state,
         isLoading: false,
         uploadImage: [...state.uploadImage, result.data],
+        file: null,
       })
+      imageRef.current.value = ''
     } catch (error) {
       setState({ ...state, isLoading: false })
       toast.error('Error uploading Image.')
@@ -104,6 +108,7 @@ const UploadImagesHook = ({ path }) => {
         <input
           type='file'
           className='custom-file-input'
+          ref={imageRef}
           onChange={handleChange}
         />
         <button className='btn' type='submit' onClick={handleSubmit}>
