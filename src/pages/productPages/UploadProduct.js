@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { UploadImage, UploadSingleProduct } from '../../components/product'
+import { UploadSingleProduct } from '../../components/product'
+import UploadImagesHook from '../../hooks/UploadImagesHook'
 
 const UploadProduct = () => {
   return (
     <Wrapper>
-      <UploadImage />
+      <UploadImagesHook path={'testProducts'} />
       <UploadSingleProduct />
     </Wrapper>
   )

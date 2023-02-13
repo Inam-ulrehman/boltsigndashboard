@@ -5,8 +5,10 @@ import {
   getImageFromLocalStorage,
   getUserFromLocalStorage,
   removeImageFromLocalStorage,
+  removeItemFromLocalStorage,
   setImageInLocalStorage,
 } from '../../utils/localStorage'
+import { emptyUploadImagesArray } from '../functions/functionSlice'
 
 const initialState = {
   // Search
@@ -100,6 +102,7 @@ export const uploadProductThunk = createAsyncThunk(
   'product/uploadProductThunk',
   async (product, thunkAPI) => {
     const user = getUserFromLocalStorage()
+
     try {
       const response = await customFetch.post(
         '/products/uploadProduct',
@@ -110,6 +113,7 @@ export const uploadProductThunk = createAsyncThunk(
           },
         }
       )
+      thunkAPI.dispatch(emptyUploadImagesArray())
       return response.data
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data)
@@ -267,6 +271,7 @@ const productSlice = createSlice({
       state.subCategory = ''
       state.description = ''
       state.uploadImage = []
+      removeItemFromLocalStorage('uploadImage')
       window.scrollTo({
         top: 0,
         behavior: 'smooth',

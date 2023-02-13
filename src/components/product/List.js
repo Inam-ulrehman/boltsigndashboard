@@ -123,7 +123,10 @@ const List = () => {
                   />
                 </td>
                 <td className='image-holder'>
-                  <img src={item.uploadImage[0].secure_url} alt={item.title} />
+                  <img
+                    src={item?.uploadImage[0]?.secure_url}
+                    alt={item.title}
+                  />
                 </td>
                 <td>{item.title}</td>
                 <td>{item.category}</td>

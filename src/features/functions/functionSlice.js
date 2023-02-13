@@ -4,6 +4,7 @@ import { customFetch } from '../../utils/axios'
 const initialState = {
   warning: false,
   deleteAllWarning: false,
+  emptyUploadImages: false,
   isLoading: false,
 }
 
@@ -26,6 +27,9 @@ const functionSlice = createSlice({
   reducers: {
     createFunction: (state, { payload }) => {
       console.log('function call')
+    },
+    emptyUploadImagesArray: (state, { payload }) => {
+      state.emptyUploadImages = !state.emptyUploadImages
     },
     showWarning: (state, { payload }) => {
       state.warning = true
@@ -56,6 +60,7 @@ const functionSlice = createSlice({
   },
 })
 export const {
+  emptyUploadImagesArray,
   createFunction,
   hideWarning,
   showWarning,

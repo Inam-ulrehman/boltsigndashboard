@@ -6,6 +6,7 @@ import {
   getStateValues,
   uploadProductThunk,
 } from '../../features/products/productSlice'
+import { getItemFromLocalStorage } from '../../utils/localStorage'
 import FormInput from '../FormInput'
 import AmountUploadSingleProduct from './AmountUploadSingleProduct'
 
@@ -14,14 +15,16 @@ const UploadSingleProduct = () => {
   const { product } = useSelector((state) => state)
   const handleSubmit = (e) => {
     e.preventDefault()
-    const { title, amount, category, description, uploadImage } = product
+    const { title, amount, category, description } = product
+    const uploadImage = getItemFromLocalStorage('uploadImage')
     if (uploadImage.length <= 0) {
       return toast.warning('Please upload Image.')
     }
     if (!title || !amount || !category || !description) {
       return toast.warning('Please fill all REQUIRED fields.')
     }
-    dispatch(uploadProductThunk(product))
+    const data = { ...product, uploadImage: uploadImage }
+    dispatch(uploadProductThunk(data))
   }
   const handleChange = (e) => {
     const name = e.target.name
@@ -35,7 +38,6 @@ const UploadSingleProduct = () => {
         <strong>Step-2. </strong>
         <p>Upload your product Details and submit.</p>
       </div>
-      {/* ==== VALUE INPUT */}
 
       {/* ====FORM INPUT */}
       <form className='form' onSubmit={handleSubmit}>

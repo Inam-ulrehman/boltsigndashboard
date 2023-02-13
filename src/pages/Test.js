@@ -1,4 +1,6 @@
+import UploadImagesHook from '../hooks/UploadImagesHook'
+
 const Test = () => {
-  return
+  return <UploadImagesHook />
 }
 export default Test
