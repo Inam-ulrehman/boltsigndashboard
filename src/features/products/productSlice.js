@@ -4,7 +4,6 @@ import { customFetch } from '../../utils/axios'
 import { addObjectInState } from '../../utils/helper'
 import {
   getUserFromLocalStorage,
-  removeImageFromLocalStorage,
   removeItemFromLocalStorage,
 } from '../../utils/localStorage'
 import { emptyUploadImagesArray } from '../functions/functionSlice'
@@ -16,7 +15,6 @@ const initialState = {
   searchSubCategory: '',
   searchProductId: '',
   searchFeature: '',
-  // Pagination
   // pagination
   list: [],
   page: 1,
@@ -25,8 +23,7 @@ const initialState = {
   sort: '-createdAt',
 
   // single product
-  refreshData: '',
-  // =========
+  // ==========
   _id: '',
   title: '',
   amount: '',
@@ -38,10 +35,12 @@ const initialState = {
   uploadImage: [],
   value: [],
   description: '',
+  // ===========
   productsList: [],
   productDeleteId: '',
   getProducts: false,
   deleteMany: [],
+  refreshData: '',
   isLoading: false,
 }
 
@@ -180,6 +179,18 @@ const productSlice = createSlice({
       state.page = 1
       state.limit = 10
       state.sort = '-createdAt'
+      // single product
+      state._id = ''
+      state.title = ''
+      state.amount = ''
+      state.category = ''
+      state.subCategory = ''
+      state.inStock = true
+      state.feature = ''
+      state.totalStock = 10
+      state.uploadImage = []
+      state.value = []
+      state.description = ''
     },
     // ========
     getStateValues: (state, { payload }) => {
@@ -205,7 +216,6 @@ const productSlice = createSlice({
       state.isLoading = true
     },
     [uploadProductThunk.fulfilled]: (state, { payload }) => {
-      removeImageFromLocalStorage('uploadImage')
       state.title = ''
       state.amount = ''
       state.category = ''
