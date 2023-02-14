@@ -67,6 +67,10 @@ const App = () => {
                 path='/dashboard/products/:_id'
                 element={<SingleProduct />}
               />
+              <Route
+                path='/dashboard/products/register'
+                element={<UploadProduct />}
+              />
               <Route path='/dashboard/orders' element={<Orders />} />
               <Route path='/dashboard/orders/:_id' element={<SingleOrder />} />
               <Route path='/dashboard/users' element={<Users />} />
@@ -87,7 +91,6 @@ const App = () => {
               <Route path='/dashboard/Test' element={<Test />} />
             </Route>
             {/* ===============Dashboard inside route===============Finish */}
-            <Route path='/dashboard/upload' element={<UploadProduct />} />
             <Route
               path='/dashboard/changePassword'
               element={<ChangePassword />}

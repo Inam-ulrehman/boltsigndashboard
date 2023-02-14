@@ -2,7 +2,7 @@ import { React, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { EditSingleProduct } from '../../components/product'
+import { UploadSingleProduct } from '../../components/product'
 import { singleProductThunk } from '../../features/products/productSlice'
 import EditUploadImagesHook from '../../hooks/images/EditUploadImagesHook'
 
@@ -22,7 +22,7 @@ const SingleProduct = () => {
       </Link>
       {/* <EditUploadImage /> */}
       <EditUploadImagesHook path={'editing'} />
-      <EditSingleProduct />
+      <UploadSingleProduct _id={_id} />
     </Wrapper>
   )
 }

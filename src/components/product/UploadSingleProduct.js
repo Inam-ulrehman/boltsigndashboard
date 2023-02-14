@@ -8,7 +8,6 @@ import {
 } from '../../features/products/productSlice'
 import { getItemFromLocalStorage } from '../../utils/localStorage'
 import FormInput from '../FormInput'
-import AmountUploadSingleProduct from './AmountUploadSingleProduct'
 
 const UploadSingleProduct = () => {
   const dispatch = useDispatch()
@@ -57,7 +56,15 @@ const UploadSingleProduct = () => {
             />
           </div>
           {/* amount  */}
-          <AmountUploadSingleProduct />
+          <div>
+            <FormInput
+              placeholder={'required'}
+              type='number'
+              name={'amount'}
+              value={product.amount}
+              onChange={handleChange}
+            />
+          </div>
         </div>
         {/* ===============div divider========= */}
         <div>
