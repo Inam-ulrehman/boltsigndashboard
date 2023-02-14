@@ -1,23 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
-import { customFetch } from '../utils/axios'
 import {
-  getItemFromLocalStorage,
-  removeItemFromLocalStorage,
-  setItemInLocalStorage,
-} from '../utils/localStorage'
+  editProductThunk,
+  getStateValues,
+} from '../../features/products/productSlice'
+import { customFetch } from '../../utils/axios'
+import { getItemFromLocalStorage } from '../../utils/localStorage'
 
 const initialState = {
   showRequirements: false,
   showHowToUpload: false,
-  uploadImage: getItemFromLocalStorage('uploadImage') || [],
   file: null,
   isLoading: false,
 }
-const UploadImagesHook = ({ path }) => {
-  const { emptyUploadImages } = useSelector((state) => state.function)
+const EditUploadImagesHook = ({ path }) => {
+  const dispatch = useDispatch()
+  const { product } = useSelector((state) => state)
+
   const [state, setState] = useState(initialState)
   const imageRef = useRef()
 
@@ -46,11 +47,15 @@ const UploadImagesHook = ({ path }) => {
           },
         }
       )
-      setItemInLocalStorage('uploadImage', [...state.uploadImage, result.data])
+      const newImages = [...product.uploadImage, result.data]
+      // Add image in local state
+      dispatch(getStateValues({ name: 'uploadImage', value: newImages }))
+      const newProduct = { ...product, uploadImage: newImages }
+      // Add image in server
+      dispatch(editProductThunk(newProduct))
       setState({
         ...state,
         isLoading: false,
-        uploadImage: [...state.uploadImage, result.data],
         file: null,
       })
       imageRef.current.value = ''
@@ -62,9 +67,12 @@ const UploadImagesHook = ({ path }) => {
 
   // ===========handle delete===========
   const handleDelete = async (public_id) => {
+    const newImages = product.uploadImage.filter(
+      (item) => item.public_id !== public_id
+    )
     const user = getItemFromLocalStorage('user')
-    const localImages = getItemFromLocalStorage('uploadImage')
     setState({ ...state, isLoading: true })
+
     try {
       await customFetch.post(
         '/images/delete',
@@ -75,18 +83,21 @@ const UploadImagesHook = ({ path }) => {
           },
         }
       )
-      const newImages = localImages.filter(
-        (item) => item.public_id !== public_id
-      )
-      setState({ ...state, isLoading: false, uploadImage: newImages })
-
-      if (newImages.length === 0) {
-        return removeItemFromLocalStorage('uploadImage')
-      }
-      setItemInLocalStorage('uploadImage', newImages)
+      // Add image in local state
+      dispatch(getStateValues({ name: 'uploadImage', value: newImages }))
+      const newProduct = { ...product, uploadImage: newImages }
+      // Add image in server
+      dispatch(editProductThunk(newProduct))
+      setState({ ...state, isLoading: false })
     } catch (error) {
       setState({ ...state, isLoading: false })
       toast.success('Error deleting Image.')
+      // Add image in local state
+      dispatch(getStateValues({ name: 'uploadImage', value: newImages }))
+      const newProduct = { ...product, uploadImage: newImages }
+      // Add image in server
+      dispatch(editProductThunk(newProduct))
+      setState({ ...state, isLoading: false })
     }
   }
 
@@ -98,10 +109,6 @@ const UploadImagesHook = ({ path }) => {
     setState({ ...state, showHowToUpload: !state.showHowToUpload })
   }
 
-  // =====================================
-  useEffect(() => {
-    setState(initialState)
-  }, [emptyUploadImages])
   return (
     <Wrapper>
       <div className='file-upload-container'>
@@ -142,7 +149,7 @@ const UploadImagesHook = ({ path }) => {
       </div>
       {/* Show uploaded images */}
       <div className='image-container'>
-        {state.uploadImage?.map((item, index) => {
+        {product?.uploadImage?.map((item, index) => {
           return (
             <div className='container' key={index}>
               <div className='image-holder'>
@@ -220,10 +227,10 @@ const Wrapper = styled.div`
     }
   }
 `
-export default UploadImagesHook
+export default EditUploadImagesHook
 
 // upload image hook use========
 
-// 1.function slice dependency to remove uploadImage. So always clear image in upload thunk.
+// 1.function slice dependency 'emptyImageArrays' to remove uploadImage. So always clear image in upload thunk.
 // 2.Pass path where to save your file
 // 3. everything happening in local storage only clear upload image is in function folder.

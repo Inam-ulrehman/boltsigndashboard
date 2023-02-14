@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
 import { customFetch } from '../../utils/axios'
+import { addObjectInState } from '../../utils/helper'
 import {
-  getImageFromLocalStorage,
   getUserFromLocalStorage,
   removeImageFromLocalStorage,
   removeItemFromLocalStorage,
-  setImageInLocalStorage,
 } from '../../utils/localStorage'
 import { emptyUploadImagesArray } from '../functions/functionSlice'
 
@@ -24,19 +23,19 @@ const initialState = {
   limit: 10,
   count: '',
   sort: '-createdAt',
-  // uploadImage
-  uploadImage: getImageFromLocalStorage('uploadImage') || [],
 
   // single product
   refreshData: '',
   // =========
+  _id: '',
   title: '',
   amount: '',
   category: '',
   subCategory: '',
   inStock: true,
-
+  feature: '',
   totalStock: 10,
+  uploadImage: [],
   value: [],
   description: '',
   productsList: [],
@@ -46,57 +45,6 @@ const initialState = {
   isLoading: false,
 }
 
-export const productThunk = createAsyncThunk(
-  'product/productThunk',
-  async (_, thunkAPI) => {
-    try {
-      const response = await customFetch.get()
-      console.log('hello Thunk')
-      return response.data
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data)
-    }
-  }
-)
-// ========== Upload image =======
-export const uploadImageThunk = createAsyncThunk(
-  'product/uploadImageThunk',
-  async (file, thunkAPI) => {
-    const user = getUserFromLocalStorage()
-    try {
-      const response = await customFetch.post('/products/uploadImage', file, {
-        headers: {
-          'content-type': 'multipart/form-data',
-          Authorization: `Bearer ${user?.token}`,
-        },
-      })
-
-      return response.data
-    } catch (error) {
-      console.log(error.response)
-      return thunkAPI.rejectWithValue(error.response.data)
-    }
-  }
-)
-// ========== Delete Image =======
-export const deleteImageThunk = createAsyncThunk(
-  'product/deleteImageThunk',
-  async (public_id, thunkAPI) => {
-    const data = { public_id: public_id }
-    const user = getUserFromLocalStorage()
-    try {
-      await customFetch.post('/products/deleteImage', data, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      })
-
-      return public_id
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data)
-    }
-  }
-)
 // ========== Upload Product =======
 export const uploadProductThunk = createAsyncThunk(
   'product/uploadProductThunk',
@@ -156,7 +104,7 @@ export const deleteProductsThunk = createAsyncThunk(
     }
   }
 )
-// ==== Delete Many CONTACTS====Start
+// ==== Delete Many Products====
 
 export const deleteManyProductsThunk = createAsyncThunk(
   'product/deleteManyProductsThunk',
@@ -175,7 +123,42 @@ export const deleteManyProductsThunk = createAsyncThunk(
     }
   }
 )
-// ==== Delete Many CONTACTS====END
+// ==== Get Single Product====
+export const singleProductThunk = createAsyncThunk(
+  'product/singleProductThunk',
+  async (_id, thunkAPI) => {
+    try {
+      const response = await customFetch.get(`/products/singleProduct/${_id}`)
+
+      return response.data
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data)
+    }
+  }
+)
+// edit Product
+export const editProductThunk = createAsyncThunk(
+  'product/editProductThunk',
+  async (product, thunkAPI) => {
+    const user = getUserFromLocalStorage()
+    try {
+      const response = await customFetch.patch(
+        `/products/singleProduct/${product._id}`,
+        product,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      )
+      console.log(response)
+      return response.data
+    } catch (error) {
+      console.log(error.response)
+      return thunkAPI.rejectWithValue(error.response.data)
+    }
+  }
+)
 const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -218,47 +201,6 @@ const productSlice = createSlice({
     },
   },
   extraReducers: {
-    [productThunk.pending]: (state, { payload }) => {
-      console.log('promise pending')
-      state.isLoading = true
-    },
-    [productThunk.fulfilled]: (state, { payload }) => {
-      console.log('promise full filled')
-      state.isLoading = false
-    },
-    [productThunk.rejected]: (state, { payload }) => {
-      console.log('promise rejected')
-      state.isLoading = false
-    },
-    // ====== Upload Image ======
-    [uploadImageThunk.pending]: (state, { payload }) => {
-      state.isLoading = true
-    },
-    [uploadImageThunk.fulfilled]: (state, { payload }) => {
-      state.uploadImage = [...state.uploadImage, payload]
-      setImageInLocalStorage(state.uploadImage)
-      state.isLoading = false
-    },
-    [uploadImageThunk.rejected]: (state, { payload }) => {
-      toast.error(`${payload?.msg ? payload.msg : payload}`)
-      state.isLoading = false
-    },
-    // ====== Delete Image ======
-    [deleteImageThunk.pending]: (state, { payload }) => {
-      state.isLoading = true
-    },
-    [deleteImageThunk.fulfilled]: (state, { payload }) => {
-      const newData = state.uploadImage.filter(
-        (item) => item.public_id !== payload
-      )
-      state.uploadImage = newData
-      setImageInLocalStorage(state.uploadImage)
-      state.isLoading = false
-    },
-    [deleteImageThunk.rejected]: (state, { payload }) => {
-      toast.error(`${payload?.msg ? payload.msg : payload}`)
-      state.isLoading = false
-    },
     // ====== upload Product ======
     [uploadProductThunk.pending]: (state, { payload }) => {
       state.isLoading = true
@@ -311,7 +253,7 @@ const productSlice = createSlice({
       toast.error(`${payload?.msg ? payload.msg : payload}`)
       state.isLoading = false
     },
-    // === Delete Many CONTACTS LIST
+    // === Delete Many Products LIST
     [deleteManyProductsThunk.pending]: (state, { payload }) => {
       state.isLoading = true
     },
@@ -322,8 +264,28 @@ const productSlice = createSlice({
       state.isLoading = false
     },
     [deleteManyProductsThunk.rejected]: (state, { payload }) => {
-      console.log(payload)
       toast.error(`${payload?.msg ? payload.msg : payload}`)
+      state.isLoading = false
+    },
+    // === Get Single Product
+    [singleProductThunk.pending]: (state, { payload }) => {
+      state.isLoading = true
+    },
+    [singleProductThunk.fulfilled]: (state, { payload }) => {
+      addObjectInState(payload, state)
+      state.isLoading = false
+    },
+    [singleProductThunk.rejected]: (state, { payload }) => {
+      state.isLoading = false
+    },
+    // ========== Edit Single product
+    [editProductThunk.pending]: (state, { payload }) => {
+      state.isLoading = true
+    },
+    [editProductThunk.fulfilled]: (state, { payload }) => {
+      state.isLoading = false
+    },
+    [editProductThunk.rejected]: (state, { payload }) => {
       state.isLoading = false
     },
   },

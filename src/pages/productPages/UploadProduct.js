@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { UploadSingleProduct } from '../../components/product'
-import UploadImagesHook from '../../hooks/UploadImagesHook'
+import UploadImagesHook from '../../hooks/images/UploadImagesHook'
 
 const UploadProduct = () => {
   return (

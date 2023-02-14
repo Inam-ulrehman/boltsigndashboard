@@ -1,4 +1,4 @@
-import UploadImagesHook from '../hooks/UploadImagesHook'
+import UploadImagesHook from '../hooks/images/UploadImagesHook'
 
 const Test = () => {
   return <UploadImagesHook />
