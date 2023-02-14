@@ -1,8 +1,12 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
+import { getStateValues } from '../../features/products/productSlice'
 import FormInput from '../FormInput'
 
 const InputHolder = ({ product, handleChange, handleSubmit }) => {
+  const dispatch = useDispatch()
+
   return (
     <Wrapper>
       {/* ====FORM INPUT */}
@@ -80,8 +84,13 @@ const InputHolder = ({ product, handleChange, handleSubmit }) => {
             <input
               type='checkbox'
               name='feature'
-              value='true'
-              onChange={handleChange}
+              value={product.feature}
+              checked={product.feature && true}
+              onChange={() =>
+                dispatch(
+                  getStateValues({ name: 'feature', value: !product.feature })
+                )
+              }
             />
             <label htmlFor='feature'>Feature product</label>
           </div>
