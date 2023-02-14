@@ -151,10 +151,9 @@ export const editProductThunk = createAsyncThunk(
           },
         }
       )
-      console.log(response)
+
       return response.data
     } catch (error) {
-      console.log(error.response)
       return thunkAPI.rejectWithValue(error.response.data)
     }
   }
@@ -283,6 +282,7 @@ const productSlice = createSlice({
       state.isLoading = true
     },
     [editProductThunk.fulfilled]: (state, { payload }) => {
+      toast.success('Product is updated.')
       state.isLoading = false
     },
     [editProductThunk.rejected]: (state, { payload }) => {
