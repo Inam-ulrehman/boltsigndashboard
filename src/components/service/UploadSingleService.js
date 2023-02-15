@@ -17,7 +17,7 @@ const UploadSingleService = () => {
     e.preventDefault()
     const { title, amount, category, description } = service
     const uploadImage = getItemFromLocalStorage('uploadImage')
-    if (uploadImage.length <= 0) {
+    if (uploadImage === null) {
       return toast.warning('Please upload Image.')
     }
     if (!title || !amount || !category || !description) {

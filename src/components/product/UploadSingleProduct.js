@@ -17,7 +17,8 @@ const UploadSingleProduct = () => {
     e.preventDefault()
     const { title, amount, category, description } = product
     const uploadImage = getItemFromLocalStorage('uploadImage')
-    if (uploadImage.length <= 0) {
+
+    if (uploadImage === null) {
       return toast.warning('Please upload Image.')
     }
     if (!title || !amount || !category || !description) {

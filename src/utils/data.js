@@ -54,12 +54,12 @@ export const DashboardSidebarNav = [
     title: 'Contact Form',
     icon: <FaRegAddressBook />,
   },
-  {
-    id: 7,
-    path: '/dashboard/test',
-    title: 'Test',
-    icon: <FaRegAddressBook />,
-  },
+  // {
+  //   id: 7,
+  //   path: '/dashboard/test',
+  //   title: 'Test',
+  //   icon: <FaRegAddressBook />,
+  // },
 ]
 // =======Dashboard========
 
