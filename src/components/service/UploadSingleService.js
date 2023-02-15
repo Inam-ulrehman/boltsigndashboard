@@ -5,17 +5,17 @@ import { toast } from 'react-toastify'
 import {
   clearState,
   getStateValues,
-  uploadProductThunk,
-} from '../../features/products/productSlice'
+  uploadServiceThunk,
+} from '../../features/services/serviceSlice'
 import { getItemFromLocalStorage } from '../../utils/localStorage'
 import InputHolder from './InputHolder'
 
-const UploadSingleProduct = () => {
+const UploadSingleService = () => {
   const dispatch = useDispatch()
-  const { product } = useSelector((state) => state)
+  const { service } = useSelector((state) => state)
   const handleSubmit = (e) => {
     e.preventDefault()
-    const { title, amount, category, description } = product
+    const { title, amount, category, description } = service
     const uploadImage = getItemFromLocalStorage('uploadImage')
     if (uploadImage.length <= 0) {
       return toast.warning('Please upload Image.')
@@ -23,9 +23,9 @@ const UploadSingleProduct = () => {
     if (!title || !amount || !category || !description) {
       return toast.warning('Please fill all REQUIRED fields.')
     }
-    const data = { ...product, uploadImage: uploadImage }
+    const data = { ...service, uploadImage: uploadImage }
     delete data['_id']
-    dispatch(uploadProductThunk(data))
+    dispatch(uploadServiceThunk(data))
   }
   const handleChange = (e) => {
     const name = e.target.name
@@ -38,11 +38,11 @@ const UploadSingleProduct = () => {
   }, [])
   return (
     <InputHolder
-      product={product}
+      service={service}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
     />
   )
 }
 
-export default UploadSingleProduct
+export default UploadSingleService

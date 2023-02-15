@@ -6,6 +6,7 @@ import contactSlice from './features/contact/contactSlice'
 import functionSlice from './features/functions/functionSlice'
 import orderSlice from './features/order/orderSlice'
 import productSlice from './features/products/productSlice'
+import serviceSlice from './features/services/serviceSlice'
 import userSlice from './features/user/userSlice'
 
 const store = configureStore({
@@ -13,6 +14,7 @@ const store = configureStore({
     user: userSlice,
     appointment: appointmentSlice,
     product: productSlice,
+    service: serviceSlice,
     function: functionSlice,
     contact: contactSlice,
     order: orderSlice,

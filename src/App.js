@@ -37,6 +37,7 @@ import {
 } from './pages/dashboardPages'
 import { Orders, SingleOrder } from './pages/orderPages'
 import { Products, UploadProduct, SingleProduct } from './pages/productPages'
+import { Services, SingleService, UploadService } from './pages/servicePages'
 import { AdminRegisterUser, SingleUser, Users } from './pages/userPages'
 
 const App = () => {
@@ -70,6 +71,15 @@ const App = () => {
               <Route
                 path='/dashboard/products/register'
                 element={<UploadProduct />}
+              />
+              <Route path='/dashboard/services' element={<Services />} />
+              <Route
+                path='/dashboard/services/:_id'
+                element={<SingleService />}
+              />
+              <Route
+                path='/dashboard/services/register'
+                element={<UploadService />}
               />
               <Route path='/dashboard/orders' element={<Orders />} />
               <Route path='/dashboard/orders/:_id' element={<SingleOrder />} />

@@ -25,6 +25,12 @@ export const DashboardSidebarNav = [
     icon: <FaProductHunt />,
   },
   {
+    id: 2.1,
+    path: '/dashboard/services',
+    title: 'services',
+    icon: <FaProductHunt />,
+  },
+  {
     id: 3,
     path: '/dashboard/appointment',
     title: 'Appointments',
